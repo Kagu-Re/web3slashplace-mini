@@ -23,6 +23,9 @@ export default function handler(req: NextApiRequest, res: any) {
         credentials: true
       },
       allowEIO3: true,
+      transports: ['polling'], // Force polling for Vercel serverless compatibility
+      pingTimeout: 30000,
+      pingInterval: 25000,
     });
     setIO(io);
     res.socket.server.io = io;
