@@ -530,13 +530,15 @@ export default function Page() {
         </div>
       </main>
 
-      {/* Desktop Leaderboard - Hidden on mobile */}
-      <div className="hidden md:block">
-        <Leaderboard 
-          isOpen={leaderboardOpen} 
-          onToggle={() => setLeaderboardOpen(!leaderboardOpen)} 
-        />
-      </div>
+      {/* Desktop Leaderboard - Hidden on mobile, only show when open */}
+      {leaderboardOpen && (
+        <div className="hidden md:block">
+          <Leaderboard 
+            isOpen={leaderboardOpen} 
+            onToggle={() => setLeaderboardOpen(!leaderboardOpen)} 
+          />
+        </div>
+      )}
 
       {/* Fixed Footer with Event Log */}
       <footer className="fixed bottom-0 left-0 right-0 z-20">
