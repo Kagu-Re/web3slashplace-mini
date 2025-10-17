@@ -55,7 +55,32 @@ A Web3-powered collaborative pixel canvas built with Next.js, featuring real-tim
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Deployment
+
+### 🚂 Railway (Recommended for Production)
+
+**Railway is the recommended platform** because it fully supports Socket.IO and real-time features.
+
+👉 **[See RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md) for full deployment guide**
+
+**Quick Deploy:**
+1. Sign up at [railway.app](https://railway.app)
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Add environment variables
+4. Done! Your app is live with full Socket.IO support ✨
+
+### ⚠️ Vercel Limitations
+
+Vercel's serverless architecture **does not support Socket.IO**. If you deploy to Vercel:
+- ❌ Real-time updates won't work
+- ❌ WebSocket connections will fail
+- ✅ The canvas will work but users must refresh to see changes
+
+**For full functionality, use Railway or another platform with persistent Node.js processes.**
+
+---
+
+## 💻 Local Development
 
 ### Prerequisites
 - **Node.js** 18.x or later
@@ -361,5 +386,6 @@ For issues or questions, please open a GitHub issue.
 ---
 
 **Built with ❤️ using Next.js, React, and Web3 technologies.**
-#   D e p l o y m e n t   r e t r y   -   1 0 / 1 8 / 2 0 2 5   0 5 : 2 9 : 1 0  
+#   D e p l o y m e n t   r e t r y   -   1 0 / 1 8 / 2 0 2 5   0 5 : 2 9 : 1 0 
+ 
  
