@@ -5,10 +5,10 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "env": {
-    "XUMM_API_KEY": "@xumm_api_key",
-    "XUMM_API_SECRET": "@xumm_api_secret",
-    "JWT_SECRET": "@jwt_secret",
-    "APP_BASE_URL": "@app_base_url"
+    "XUMM_API_KEY": "XUMM_API_KEY",
+    "XUMM_API_SECRET": "XUMM_API_SECRET",
+    "JWT_SECRET": "JWT_SECRET",
+    "APP_BASE_URL": "APP_BASE_URL"
   }
 }
 
