@@ -460,6 +460,7 @@ export default function Page() {
                       setPanX(x);
                       setPanY(y);
                     }}
+                    onZoomChange={setZoom}
                     selectedColor={selectedColor}
                     showClusters={showClusters}
                     leaderboardData={leaderboardData}
