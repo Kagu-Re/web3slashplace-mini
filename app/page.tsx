@@ -47,6 +47,7 @@ export default function Page() {
   
   // Leaderboard state
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [mobileLeaderboardOpen, setMobileLeaderboardOpen] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
   
   // Demo state removed for production
@@ -322,7 +323,7 @@ export default function Page() {
                   setMobileMenuOpen(false);
                   // Small delay to ensure menu closes first
                   setTimeout(() => {
-                    setLeaderboardOpen(true);
+                    setMobileLeaderboardOpen(true);
                   }, 100);
                 }}
                 className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -568,11 +569,13 @@ export default function Page() {
         onToggleClusters={() => setShowClusters(!showClusters)}
       />
 
-      {/* Mobile Leaderboard */}
-      <MobileLeaderboard
-        isOpen={leaderboardOpen}
-        onClose={() => setLeaderboardOpen(false)}
-      />
+      {/* Mobile Leaderboard - Only render when open */}
+      {mobileLeaderboardOpen && (
+        <MobileLeaderboard
+          isOpen={mobileLeaderboardOpen}
+          onClose={() => setMobileLeaderboardOpen(false)}
+        />
+      )}
     </div>
   );
 }
