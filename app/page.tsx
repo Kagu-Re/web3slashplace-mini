@@ -7,7 +7,7 @@ import { Canvas } from '@/components/Canvas';
 import { CanvasControls } from '@/components/CanvasControls';
 import { EventLog } from '@/components/EventLog';
 import { ColorPicker } from '@/components/ColorPicker';
-import { DemoController } from '@/components/DemoController';
+// Demo controller removed for production
 import { Leaderboard } from '@/components/Leaderboard';
 import { MobileColorPicker } from '@/components/MobileColorPicker';
 import { MobileControls } from '@/components/MobileControls';
@@ -49,8 +49,7 @@ export default function Page() {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
   
-  // Demo state
-  const [isDemoRunning, setIsDemoRunning] = useState(false);
+  // Demo state removed for production
   
   // Cluster visualization state
   const [showClusters, setShowClusters] = useState(true);
@@ -247,22 +246,7 @@ export default function Page() {
     alert('Clear canvas functionality coming soon!');
   };
 
-  // Demo functions
-  const handleStartDemo = () => {
-    setIsDemoRunning(true);
-    setCooldownMsg('🎮 Demo started! Watch AI agents compete for territory!');
-    setTimeout(() => setCooldownMsg(null), 5000);
-  };
-
-  const handleStopDemo = () => {
-    setIsDemoRunning(false);
-    setCooldownMsg('Demo stopped');
-    setTimeout(() => setCooldownMsg(null), 3000);
-  };
-
-  const handleDemoPixelPlace = (x: number, y: number, color: string, agentId: string) => {
-    place(x, y, color, agentId);
-  };
+  // Demo functions removed for production
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex flex-col">
@@ -381,23 +365,6 @@ export default function Page() {
                 </svg>
                 <span className="text-gray-700">Canvas Controls</span>
               </button>
-              
-              <button
-                onClick={() => {
-                  setIsDemoRunning(!isDemoRunning);
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                  isDemoRunning 
-                    ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                    : 'hover:bg-gray-100 text-gray-700'
-                }`}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{isDemoRunning ? 'Stop Demo' : 'Start Demo'}</span>
-              </button>
             </div>
 
             {/* Mobile Metrics */}
@@ -444,15 +411,7 @@ export default function Page() {
             </div>
           )}
 
-          {/* Demo Controller - Hidden on mobile */}
-          <div className="hidden md:block">
-            <DemoController 
-              isRunning={isDemoRunning}
-              onStart={handleStartDemo}
-              onStop={handleStopDemo}
-              onPlacePixel={handleDemoPixelPlace}
-            />
-          </div>
+          {/* Demo Controller removed for production */}
 
           {/* Canvas Section */}
           <div className="bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-xl border border-white/20 p-2 md:p-8 relative">
