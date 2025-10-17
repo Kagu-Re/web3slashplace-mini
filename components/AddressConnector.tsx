@@ -15,17 +15,22 @@ declare global {
 
 const queryClient = new QueryClient();
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string;
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'fallback-project-id';
+
+// Warn if WalletConnect project ID is missing
+if (typeof window !== 'undefined' && projectId === 'fallback-project-id') {
+  console.warn('⚠️ WalletConnect project ID not found. WalletConnect features will be disabled.');
+}
 
 // Only create config on client side to avoid SSR issues
 const config = typeof window !== 'undefined' ? createConfig({
   chains: [mainnet],
   connectors: [
     injected(),
-    walletConnect({
+    ...(projectId !== 'fallback-project-id' ? [walletConnect({
       projectId,
       showQrModal: true,
-    }),
+    })] : []),
   ],
   transports: { [mainnet.id]: http() },
 }) : null;
