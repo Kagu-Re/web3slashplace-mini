@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "XUMM_API_KEY": "@xumm_api_key",
+    "XUMM_API_SECRET": "@xumm_api_secret",
+    "JWT_SECRET": "@jwt_secret",
+    "APP_BASE_URL": "@app_base_url"
+  }
+}
+
