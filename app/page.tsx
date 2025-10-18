@@ -280,10 +280,14 @@ export default function Page() {
           <div className="flex items-center justify-between min-w-0">
             {/* Logo and Navigation */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 min-w-0 flex-1">
-              <h1 className="text-base sm:text-lg md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent whitespace-nowrap">
-                <span className="hidden sm:inline">CanvasW3</span>
-                <span className="sm:hidden">CW3</span>
-              </h1>
+              <div className="flex flex-col min-w-0">
+                <h1 className="text-base sm:text-lg md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent whitespace-nowrap">
+                  <span className="hidden sm:inline">CanvasW3</span>
+                  <span className="sm:hidden">CanvasW3</span>
+                </h1>
+                {/* Mobile subtitle */}
+                <p className="sm:hidden text-xs text-gray-500 -mt-1">Web3 Pixel Canvas</p>
+              </div>
               {/* Desktop Navigation */}
               <div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
                 <button 
@@ -293,7 +297,7 @@ export default function Page() {
                   About & Info
                 </button>
                 <a 
-                  href="https://github.com/Kagu-Re/web3slashplace-mini" 
+                  href="https://github.com/Kagu-Re/CanvasW3" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-xs xl:text-sm text-gray-600 hover:text-gray-900 transition-colors whitespace-nowrap flex items-center gap-1"
@@ -314,8 +318,21 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Mobile Hamburger Menu */}
-            <div className="md:hidden flex-shrink-0 ml-2">
+            {/* Mobile Status and Menu */}
+            <div className="md:hidden flex items-center space-x-2 flex-shrink-0 ml-2">
+              {/* Mobile Status Indicators */}
+              {metrics && (
+                <div className="hidden xs:flex items-center space-x-2 text-xs text-gray-500">
+                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                    {metrics.placedPixels}px
+                  </span>
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                    {metrics.totalPlayers}👥
+                  </span>
+                </div>
+              )}
+              
+              {/* Mobile Hamburger Menu */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
