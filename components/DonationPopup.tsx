@@ -30,7 +30,7 @@ export function DonationPopup({ isOpen, onClose }: Props) {
             Enjoying CanvasW3?
           </h3>
           <p className="text-gray-600">
-            You've placed 5+ pixels! Consider supporting the project.
+            You have placed 5+ pixels! Consider supporting the project.
           </p>
         </div>
 

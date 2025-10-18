@@ -85,7 +85,7 @@ export function AboutModal({ isOpen, onClose }: Props) {
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✓</span>
-                <span><strong>Real-time Updates:</strong> See other players' pixels instantly via WebSocket</span>
+                <span><strong>Real-time Updates:</strong> See other players pixels instantly via WebSocket</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-2">✓</span>

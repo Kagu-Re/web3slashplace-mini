@@ -36,7 +36,6 @@ export function RatingPopup({ isOpen, onClose }: Props) {
         className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-slideUp"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="text-center mb-6">
           <div className="text-6xl mb-2">⭐</div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -45,13 +44,12 @@ export function RatingPopup({ isOpen, onClose }: Props) {
           <p className="text-gray-600">
             {hasRated 
               ? `You gave us ${rating} star${rating !== 1 ? 's' : ''}! We appreciate your feedback.`
-              : 'You've placed 5+ pixels! How do you like CanvasW3?'}
+              : 'You have placed 5+ pixels! How do you like CanvasW3?'}
           </p>
         </div>
 
         {!hasRated ? (
           <>
-            {/* Star Rating */}
             <div className="flex justify-center gap-2 mb-6">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -72,13 +70,12 @@ export function RatingPopup({ isOpen, onClose }: Props) {
               ))}
             </div>
 
-            {/* Helper Text */}
             <div className="text-center mb-4">
               <p className="text-sm text-gray-500">
                 {hoveredStar > 0 && (
                   <span>
                     {hoveredStar === 1 && "😞 Could be better"}
-                    {hoveredStar === 2 && "😐 It's okay"}
+                    {hoveredStar === 2 && "😐 It is okay"}
                     {hoveredStar === 3 && "🙂 Good"}
                     {hoveredStar === 4 && "😊 Great!"}
                     {hoveredStar === 5 && "🤩 Amazing!"}
@@ -87,7 +84,6 @@ export function RatingPopup({ isOpen, onClose }: Props) {
               </p>
             </div>
 
-            {/* Skip Button */}
             <button
               onClick={onClose}
               className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors font-medium"
@@ -96,7 +92,6 @@ export function RatingPopup({ isOpen, onClose }: Props) {
             </button>
           </>
         ) : (
-          /* Thank You Message */
           <div className="text-center">
             <div className="text-6xl mb-4">🎉</div>
             <p className="text-lg text-gray-700 mb-4">
@@ -118,4 +113,3 @@ export function RatingPopup({ isOpen, onClose }: Props) {
     </div>
   );
 }
-

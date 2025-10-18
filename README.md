@@ -1,11 +1,13 @@
-# Web3SlashPlace Mini
+# CanvasW3
 
 A Web3-powered collaborative pixel canvas built with Next.js, featuring real-time updates, multi-chain wallet support, and advanced game mechanics.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![React](https://img.shields.io/badge/React-18-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
-![Socket.IO](https://img.shields.io/badge/Socket.IO-Real--time-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-4.7-green)
+![Wagmi](https://img.shields.io/badge/Wagmi-2.12-purple)
+![WalletConnect](https://img.shields.io/badge/WalletConnect-2.14-blue)
 
 ## ✨ Features
 
@@ -90,7 +92,7 @@ Vercel's serverless architecture **does not support Socket.IO**. If you deploy t
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/Kagu-Re/web3slashplace-mini.git
 cd web3slashplace-mini
 ```
 
@@ -379,9 +381,20 @@ This is a demo project, but contributions are welcome!
 
 ---
 
+## 💜 Support Development
+
+Enjoying CanvasW3? Consider supporting the project!
+
+**Donate Crypto:**
+- ETH/ERC-20: `0x293e53080Db196BEdDD0Cfa40B70360b2a621564`
+
+Your donations help keep the server running and support ongoing development. Thank you! 🙏
+
+---
+
 ## 📞 Support
 
-For issues or questions, please open a GitHub issue.
+For issues or questions, please open a GitHub issue at [github.com/Kagu-Re/web3slashplace-mini](https://github.com/Kagu-Re/web3slashplace-mini/issues).
 
 ---
 
