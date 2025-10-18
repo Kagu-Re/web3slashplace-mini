@@ -464,25 +464,41 @@ export default function Page() {
       {/* Main Content - with padding for fixed header and footer */}
       <main className="flex-1 pt-16 md:pt-20 pb-20 md:pb-24">
         <div className="max-w-7xl mx-auto px-2 md:px-6 py-2 md:py-8">
-          {/* Connection Status */}
-          {address && (
-            <div className="mb-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-md border border-white/20 p-3 sm:p-4">
-              <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
-                <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">Connected as</span>
-                <span className="font-mono text-xs sm:text-sm bg-gray-100 px-2 sm:px-3 py-1 rounded-lg truncate min-w-0 flex-1">
-                  {address}
-                </span>
-              </div>
-            </div>
-          )}
 
           {/* Demo Controller removed for production */}
 
           {/* Canvas Section */}
           <div className="bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-xl border border-white/20 p-2 md:p-8 relative">
             <div className="flex items-center justify-between mb-4 md:mb-6">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Pixel Canvas</h2>
+              {/* Connection Status - Desktop */}
+              {address && (
+                <div className="hidden md:flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-gray-600">Connected as</span>
+                  <span className="font-mono text-sm bg-gray-100 px-3 py-1 rounded-lg">
+                    {address}
+                  </span>
+                </div>
+              )}
+              
+              {/* Connection Status - Mobile (truncated) */}
+              {address && (
+                <div className="md:hidden flex items-center space-x-2 min-w-0 flex-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
+                  <span className="text-xs text-gray-600 whitespace-nowrap">Connected:</span>
+                  <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded-lg truncate min-w-0">
+                    {address.length > 12 ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}
+                  </span>
+                </div>
+              )}
+              
+              {/* Fallback when not connected */}
+              {!address && (
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <span className="text-sm text-gray-500">Not connected</span>
+                </div>
+              )}
               {/* Desktop Color Picker - Hidden on mobile */}
               <div className="hidden md:flex items-center space-x-4">
                 <ColorPicker 
