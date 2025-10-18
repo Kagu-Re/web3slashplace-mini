@@ -141,6 +141,15 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
 
         console.log("🎉 [SIWE] Auth verified");
         lastAuthenticatedAddress = address; // Mark as authenticated
+        
+        // Show success message for mobile users
+        if (typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+          // Small delay to ensure the message shows after returning from wallet app
+          setTimeout(() => {
+            console.log('📱 [SIWE] Mobile device detected - connection successful');
+          }, 500);
+        }
+        
         onAddress(address);
         
       } catch (e: any) {
