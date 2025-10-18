@@ -161,12 +161,14 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
       console.error('Wallet connection error:', error);
       if (error.message.includes('rejected') || error.message.includes('denied')) {
         // User rejected - don't show error
+      } else if (error.message.includes('reset') || error.message.includes('Connection request reset')) {
+        // WalletConnect connection reset - expected when user closes modal
       } else if (error.message.includes('Project ID')) {
         alert('WalletConnect error: Invalid Project ID.\n\nPlease check NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in .env.local');
       } else if (error.message.includes('Provider not found')) {
         // Don't show console warnings for missing providers - this is expected
       } else if (error.message.includes('scheme does not have a registered handler')) {
-        // WalletConnect deep link error - expected when no wallet app is installed
+        // WalletConnect deep link error - expected when no wallet app is installed on desktop
       } else {
         console.warn('Connection error:', error.message);
       }
@@ -238,7 +240,7 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
               if (walletConnectConnector) connect({ connector: walletConnectConnector });
             }}
             disabled={!walletConnectConnector}
-            title={!walletConnectConnector ? 'WalletConnect not available' : 'Connect with WalletConnect (requires mobile wallet app)'}
+            title={!walletConnectConnector ? 'WalletConnect not available' : 'WalletConnect - Scan QR with mobile wallet (Trust Wallet, MetaMask Mobile, etc.)'}
           >
             <div className="flex items-center space-x-1 sm:space-x-2">
               <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-current rounded-full"></div>
