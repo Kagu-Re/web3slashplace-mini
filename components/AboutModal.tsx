@@ -34,7 +34,7 @@ export function AboutModal({ isOpen, onClose }: Props) {
         {/* Header */}
         <div className="sticky top-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">About Web3 Slash Place</h2>
+            <h2 className="text-2xl font-bold">About CanvasW3</h2>
             <button
               onClick={onClose}
               className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
@@ -165,30 +165,24 @@ export function AboutModal({ isOpen, onClose }: Props) {
           {/* Support/Donate */}
           <section>
             <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
-              <span className="text-2xl mr-2">☕</span> Support Development
+              <span className="text-2xl mr-2">💜</span> Support Development
             </h3>
             <p className="text-gray-700 mb-4">
-              If you enjoy this project, consider buying us a coffee! Your support helps keep the server running and development active.
+              If you enjoy this project, consider supporting development! Your donation helps keep the server running and development active.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a
-                href="https://www.buymeacoffee.com/your-username"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-6 py-3 rounded-lg transition-colors font-medium"
-              >
-                <span className="text-xl">☕</span>
-                Buy Me a Coffee
-              </a>
-              
-              <button
-                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-lg transition-all font-medium"
-                onClick={() => alert('Connect your wallet and send ETH to: 0xYourWalletAddress')}
-              >
-                <span className="text-xl">💜</span>
-                Donate Crypto
-              </button>
-            </div>
+            <button
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-lg transition-all font-medium"
+              onClick={() => {
+                navigator.clipboard.writeText('0x293e53080Db196BEdDD0Cfa40B70360b2a621564');
+                alert('Wallet address copied!\n\n0x293e53080Db196BEdDD0Cfa40B70360b2a621564\n\nSend ETH or ERC-20 tokens to this address.');
+              }}
+            >
+              <span className="text-xl">💰</span>
+              Copy Donation Address
+            </button>
+            <p className="text-xs text-gray-500 mt-2">
+              ETH & ERC-20: 0x293e...1564
+            </p>
           </section>
 
           {/* Tech Stack */}

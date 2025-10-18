@@ -13,6 +13,8 @@ import { MobileColorPicker } from '@/components/MobileColorPicker';
 import { MobileControls } from '@/components/MobileControls';
 import { MobileLeaderboard } from '@/components/MobileLeaderboard';
 import { AboutModal } from '@/components/AboutModal';
+import { DonationPopup } from '@/components/DonationPopup';
+import { RatingPopup } from '@/components/RatingPopup';
 import { Toast } from '@/components/Toast';
 import type { PixelEvent } from '@/lib/eventLog';
 import type { Pixel } from '@/lib/state';
@@ -67,6 +69,13 @@ export default function Page() {
   // Mobile-specific state
   const [eventLogOpen, setEventLogOpen] = useState(false);
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
+  
+  // Popup state
+  const [donationPopupOpen, setDonationPopupOpen] = useState(false);
+  const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
+  const [pixelsPlacedCount, setPixelsPlacedCount] = useState(0);
+  const [hasShownDonationPopup, setHasShownDonationPopup] = useState(false);
+  const [hasShownRatingPopup, setHasShownRatingPopup] = useState(false);
 
   // init socket server
   useEffect(() => {
@@ -221,9 +230,21 @@ export default function Page() {
         setToastMessage(j.error || 'Error placing pixel');
       }
               } else {
-                // Success - no need for toast since pixel appears on canvas
-                // setToastType('success');
-                // setToastMessage('Pixel placed!');
+                // Success - increment counter and check for popups
+                const newCount = pixelsPlacedCount + 1;
+                setPixelsPlacedCount(newCount);
+                
+                // Show rating popup after 5 pixels (if not shown yet)
+                if (newCount === 5 && !hasShownRatingPopup) {
+                  setTimeout(() => setRatingPopupOpen(true), 1000);
+                  setHasShownRatingPopup(true);
+                }
+                
+                // Show donation popup after 10 pixels (if not shown yet)
+                if (newCount === 10 && !hasShownDonationPopup) {
+                  setTimeout(() => setDonationPopupOpen(true), 1000);
+                  setHasShownDonationPopup(true);
+                }
               }
   }
 
@@ -260,8 +281,8 @@ export default function Page() {
             {/* Logo and Navigation */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 min-w-0 flex-1">
               <h1 className="text-base sm:text-lg md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent whitespace-nowrap">
-                <span className="hidden sm:inline">Web3SlashPlace Mini</span>
-                <span className="sm:hidden">W3SP</span>
+                <span className="hidden sm:inline">CanvasW3</span>
+                <span className="sm:hidden">CW3</span>
               </h1>
               {/* Desktop Navigation */}
               <div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
@@ -609,6 +630,18 @@ export default function Page() {
       <AboutModal 
         isOpen={aboutModalOpen}
         onClose={() => setAboutModalOpen(false)}
+      />
+
+      {/* Rating Popup */}
+      <RatingPopup
+        isOpen={ratingPopupOpen}
+        onClose={() => setRatingPopupOpen(false)}
+      />
+
+      {/* Donation Popup */}
+      <DonationPopup
+        isOpen={donationPopupOpen}
+        onClose={() => setDonationPopupOpen(false)}
       />
     </div>
   );
