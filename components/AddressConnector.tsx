@@ -97,7 +97,7 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
         
         let signature: string;
         
-        // Try window.ethereum first (for injected wallets like MetaMask)
+        // Always use window.ethereum for signing to avoid wagmi connector issues
         if (typeof window !== 'undefined' && window.ethereum) {
           try {
             signature = await window.ethereum.request({
@@ -105,13 +105,11 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
               params: [message, address],
             });
           } catch (err: any) {
-            // Fallback to wagmi if window.ethereum fails
-            console.log('⚠️ [SIWE] window.ethereum failed, trying wagmi...');
-            signature = await signMessageAsync({ message });
+            console.error('❌ [SIWE] Signature failed:', err);
+            throw err;
           }
         } else {
-          // Use wagmi for WalletConnect
-          signature = await signMessageAsync({ message });
+          throw new Error('No wallet provider found');
         }
         
         if (runId !== authRunId) {
@@ -284,12 +282,21 @@ export function AddressConnector({ onAddress }: { onAddress: (addr: string) => v
     setXummPending(true);
     try {
       const r = await fetch('/api/xumm/create', { method: 'POST' });
+      
+      // Handle non-JSON responses (like HTML error pages)
+      const contentType = r.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('XUMM API returned non-JSON response');
+        alert('Xaman wallet is not configured on this server.\n\nTo enable it, set XUMM_API_KEY and XUMM_API_SECRET environment variables.');
+        setXummPending(false);
+        return;
+      }
+      
       const j = await r.json();
-
 
       if (!r.ok || (!j.deeplink && !j.qr_png)) {
         console.error('XUMM API error:', j);
-        alert(`Failed to initialize Xaman: ${j.error || 'Unknown error'}\n\nPlease check your XUMM_API_KEY and XUMM_API_SECRET in .env.local`);
+        alert(`Xaman wallet is not configured.\n\n${j.error || 'Missing XUMM_API_KEY and XUMM_API_SECRET'}`);
         setXummPending(false);
         return;
       }

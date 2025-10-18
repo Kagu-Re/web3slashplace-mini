@@ -142,7 +142,7 @@ export function Canvas({ grid, size, onPlace, zoom, panX, panY, onPanChange, onZ
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
+    // Don't preventDefault here - let it be handled by CSS touch-action instead
     
     if (e.touches.length === 2) {
       // Two fingers - start pinch-to-zoom
@@ -179,7 +179,7 @@ export function Canvas({ grid, size, onPlace, zoom, panX, panY, onPanChange, onZ
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault();
+    // Don't preventDefault here - let CSS touch-action handle it
     
     if (isPinching && e.touches.length === 2) {
       // Handle pinch-to-zoom
@@ -290,7 +290,8 @@ export function Canvas({ grid, size, onPlace, zoom, panX, panY, onPanChange, onZ
           boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
           transform: `scale(${zoom}) translate(${panX / zoom}px, ${panY / zoom}px)`,
           transformOrigin: 'center',
-          transition: isDragging ? 'none' : 'transform 0.2s ease-out'
+          transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+          touchAction: 'none' // Prevent default touch behaviors
       }}
     >
       {grid.flatMap((row, y) =>
@@ -307,14 +308,12 @@ export function Canvas({ grid, size, onPlace, zoom, panX, panY, onPanChange, onZ
           <button
             key={`${x}-${y}`}
                     onClick={(e) => {
-                      e.preventDefault();
                       e.stopPropagation();
                       // Prevent click if user was dragging or pinching
                       if (dragDistance > 5 || isDragging || isPinching) return;
                       onPlace(x, y, selectedColor);
                     }}
                     onTouchEnd={(e) => {
-                      e.preventDefault();
                       e.stopPropagation();
                       // Only handle single touch, prevent if dragging or pinching
                       if (e.touches.length === 0 && !isDragging && !isPinching && dragDistance <= 5) {
