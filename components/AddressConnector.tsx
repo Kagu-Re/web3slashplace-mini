@@ -97,7 +97,7 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
         
         let signature: string;
         
-        // Always use window.ethereum for signing to avoid wagmi connector issues
+        // Try window.ethereum first (best for MetaMask/injected)
         if (typeof window !== 'undefined' && window.ethereum) {
           try {
             signature = await window.ethereum.request({
@@ -105,11 +105,17 @@ function EVMInner({ onAddress }: { onAddress: (addr: string) => void }) {
               params: [message, address],
             });
           } catch (err: any) {
-            console.error('❌ [SIWE] Signature failed:', err);
+            console.error('❌ [SIWE] window.ethereum signature failed:', err);
             throw err;
           }
         } else {
-          throw new Error('No wallet provider found');
+          // Fallback to wagmi for WalletConnect and other providers
+          try {
+            signature = await signMessageAsync({ message });
+          } catch (err: any) {
+            console.error('❌ [SIWE] wagmi signature failed:', err);
+            throw err;
+          }
         }
         
         if (runId !== authRunId) {
