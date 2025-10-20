@@ -1,8 +1,8 @@
-import { Server as IOServer, Socket } from 'socket.io';
+import { Server as IOServer } from 'socket.io';
 import { addEvent } from './eventLog';
-import { 
-  CANVAS_SIZE, 
-  COOLDOWN_MS, 
+import {
+  CANVAS_SIZE,
+  COOLDOWN_MS,
   AUTOFILL_RANGE,
   LEADERBOARD_CACHE_MS,
   getBaseTerritoryMultiplier,
@@ -11,6 +11,8 @@ import {
   getStrategicControlBonus,
   FRAGMENTATION_PENALTY
 } from './constants';
+import { readPersistedState, writePersistedState } from './persistentStore';
+import type { PersistedState, SerializedPixel } from './persistentStore';
 
 export type Pixel = { x: number; y: number; color: string; placedBy: string; placedAt: number };
 export type CanvasState = (Pixel | null)[][]; // null = empty, Pixel = filled
@@ -27,6 +29,69 @@ const sessions = new Map<string, string>();
 
 let io: IOServer | null = null;
 
+type UserStats = {
+  pixelCount: number;
+  lastActive: number;
+};
+
+const userStats = new Map<string, UserStats>();
+
+let leaderboardCache: { data: any[]; timestamp: number } | null = null;
+
+const PERSIST_DEBOUNCE_MS = 200;
+let persistTimer: NodeJS.Timeout | null = null;
+
+function serializeCanvas(): (SerializedPixel | null)[][] {
+  return canvas.map(row => row.map(pixel => (pixel ? { ...pixel } : null)));
+}
+
+function serializeState(): PersistedState {
+  return {
+    canvas: serializeCanvas(),
+    lastPlaceAt: Object.fromEntries(lastPlaceAt.entries()),
+    userStats: Object.fromEntries(userStats.entries())
+  };
+}
+
+function schedulePersist() {
+  if (persistTimer) return;
+
+  persistTimer = setTimeout(() => {
+    persistTimer = null;
+    writePersistedState(serializeState());
+  }, PERSIST_DEBOUNCE_MS);
+}
+
+function hydrateState(persisted: PersistedState) {
+  const hasValidDimensions =
+    persisted.canvas.length === SIZE &&
+    persisted.canvas.every(row => row.length === SIZE);
+
+  if (hasValidDimensions) {
+    canvas = persisted.canvas.map(row => row.map(pixel => (pixel ? { ...pixel } : null)));
+  } else {
+    console.warn('⚠️  Persisted canvas state has invalid dimensions. Reinitializing.');
+    canvas = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+  }
+
+  lastPlaceAt.clear();
+  for (const [address, timestamp] of Object.entries(persisted.lastPlaceAt)) {
+    lastPlaceAt.set(address, timestamp);
+  }
+
+  userStats.clear();
+  for (const [address, stats] of Object.entries(persisted.userStats)) {
+    userStats.set(address, { ...stats });
+  }
+
+  leaderboardCache = null;
+}
+
+const persistedState = readPersistedState();
+if (persistedState) {
+  hydrateState(persistedState);
+}
+
 export function getSize() { return SIZE; }
 
 export function getCanvas(): CanvasState {
@@ -35,6 +100,10 @@ export function getCanvas(): CanvasState {
 
 export function clearCanvas() {
   canvas = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+  lastPlaceAt.clear();
+  userStats.clear();
+  leaderboardCache = null;
+  schedulePersist();
 }
 
 export function setIO(server: IOServer) {
@@ -142,7 +211,7 @@ function autofillBetweenPixels(address: string, color: string, x1: number, y1: n
       };
       canvas[y][x] = pixel;
       incrementPixelCount(address);
-      
+
       // Broadcast each autofilled pixel
       if (io) {
         io.emit('pixel_placed', { x, y, color, by: address, placedAt: pixel.placedAt });
@@ -150,10 +219,12 @@ function autofillBetweenPixels(address: string, color: string, x1: number, y1: n
         io.emit('pixel_event', event);
       }
     });
-    
+
+    schedulePersist();
+
     return true;
   }
-  
+
   return false;
 }
 
@@ -272,25 +343,16 @@ export function getAddressBySession(sessionId: string): string | null {
   return sessions.get(sessionId) ?? null;
 }
 
-// User stats for leaderboard
-type UserStats = {
-  pixelCount: number;
-  lastActive: number; // Unix timestamp
-};
-const userStats = new Map<string, UserStats>();
-
-// Leaderboard caching for performance
-let leaderboardCache: { data: any[], timestamp: number } | null = null;
-
 export function incrementPixelCount(address: string) {
   const stats = userStats.get(address) || { pixelCount: 0, lastActive: 0 };
   stats.pixelCount++;
   stats.lastActive = Date.now();
   userStats.set(address, stats);
-  
+
   // Invalidate leaderboard cache when stats change
   leaderboardCache = null;
-  
+
+  schedulePersist();
 }
 
 export function getLeaderboard() {

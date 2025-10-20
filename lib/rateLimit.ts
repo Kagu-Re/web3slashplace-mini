@@ -5,20 +5,20 @@ import type { NextApiRequest } from 'next';
  * Uses sliding window algorithm for fair rate limiting
  */
 
-// Store: IP -> array of timestamps
-const ipRequests = new Map<string, number[]>();
+// Store: key -> array of timestamps
+const requestBuckets = new Map<string, number[]>();
 
 // Cleanup old entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
   const fiveMinutesAgo = now - 5 * 60 * 1000;
   
-  for (const [ip, timestamps] of ipRequests.entries()) {
+  for (const [key, timestamps] of requestBuckets.entries()) {
     const recentRequests = timestamps.filter(t => t > fiveMinutesAgo);
     if (recentRequests.length === 0) {
-      ipRequests.delete(ip);
+      requestBuckets.delete(key);
     } else {
-      ipRequests.set(ip, recentRequests);
+      requestBuckets.set(key, recentRequests);
     }
   }
 }, 5 * 60 * 1000);
@@ -51,58 +51,58 @@ export function getClientIp(req: NextApiRequest): string {
 }
 
 /**
- * Check if IP has exceeded rate limit using sliding window algorithm
- * 
- * @param ip - Client IP address
+ * Check if a caller has exceeded the rate limit using a sliding window algorithm
+ *
+ * @param key - Identifier for the caller (IP address, agent id, etc.)
  * @param maxRequests - Maximum requests allowed in window (default: 10)
  * @param windowMs - Time window in milliseconds (default: 10 seconds)
  * @returns true if allowed, false if rate limited
  */
 export function checkIpRateLimit(
-  ip: string, 
-  maxRequests: number = 10, 
+  key: string,
+  maxRequests: number = 10,
   windowMs: number = 10000
 ): boolean {
   const now = Date.now();
   const windowStart = now - windowMs;
 
-  // Get request timestamps for this IP
-  const requests = ipRequests.get(ip) || [];
+  // Get request timestamps for this key
+  const requests = requestBuckets.get(key) || [];
 
   // Filter to only recent requests within the window
   const recentRequests = requests.filter(timestamp => timestamp > windowStart);
 
   // Check if limit exceeded
   if (recentRequests.length >= maxRequests) {
-    console.warn(`⚠️ Rate limit exceeded for IP ${ip}: ${recentRequests.length}/${maxRequests} in ${windowMs}ms`);
+    console.warn(`⚠️ Rate limit exceeded for key ${key}: ${recentRequests.length}/${maxRequests} in ${windowMs}ms`);
     return false;
   }
 
   // Add current request timestamp
   recentRequests.push(now);
-  ipRequests.set(ip, recentRequests);
+  requestBuckets.set(key, recentRequests);
 
   return true;
 }
 
 /**
- * Get remaining requests for an IP
+ * Get remaining requests for an identifier
  */
-export function getRemainingRequests(ip: string, maxRequests: number = 10, windowMs: number = 10000): number {
+export function getRemainingRequests(key: string, maxRequests: number = 10, windowMs: number = 10000): number {
   const now = Date.now();
   const windowStart = now - windowMs;
 
-  const requests = ipRequests.get(ip) || [];
+  const requests = requestBuckets.get(key) || [];
   const recentRequests = requests.filter(timestamp => timestamp > windowStart);
 
   return Math.max(0, maxRequests - recentRequests.length);
 }
 
 /**
- * Get time until rate limit resets for an IP
+ * Get time until rate limit resets for an identifier
  */
-export function getResetTime(ip: string, windowMs: number = 10000): number {
-  const requests = ipRequests.get(ip) || [];
+export function getResetTime(key: string, windowMs: number = 10000): number {
+  const requests = requestBuckets.get(key) || [];
   if (requests.length === 0) return 0;
 
   const oldestRequest = Math.min(...requests);
