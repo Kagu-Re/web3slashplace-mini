@@ -13,17 +13,30 @@ function isValidHexColor(color: string): boolean {
 export default function handler(req: NextApiRequest, res: any) {
   if (req.method !== 'POST') return res.status(405).end();
   
-  // IP-based rate limiting (10 requests per 10 seconds)
-  // Skip rate limit for demo agents
+  // IP and agent-based rate limiting (10 requests per 10 seconds)
   const { agentId } = req.body || {};
-  if (!agentId) {
-    const clientIp = getClientIp(req);
-    if (!checkIpRateLimit(clientIp, 10, 10000)) {
-      const resetInMs = getResetTime(clientIp, 10000);
+  const clientIp = getClientIp(req);
+  const windowMs = 10_000;
+  const maxRequests = 10;
+
+  if (!checkIpRateLimit(clientIp, maxRequests, windowMs)) {
+    const resetInMs = getResetTime(clientIp, windowMs);
+    const resetInSec = Math.ceil(resetInMs / 1000);
+    console.warn(`🚫 Rate limit exceeded for IP ${clientIp}`);
+    return res.status(429).json({
+      error: `Too many requests. Please wait ${resetInSec} seconds.`,
+      retryAfter: resetInSec
+    });
+  }
+
+  if (agentId) {
+    const agentKey = `agent:${agentId}`;
+    if (!checkIpRateLimit(agentKey, maxRequests, windowMs)) {
+      const resetInMs = getResetTime(agentKey, windowMs);
       const resetInSec = Math.ceil(resetInMs / 1000);
-      console.warn(`🚫 IP rate limit exceeded for ${clientIp}`);
-      return res.status(429).json({ 
-        error: `Too many requests. Please wait ${resetInSec} seconds.`,
+      console.warn(`🚫 Rate limit exceeded for agent ${agentId}`);
+      return res.status(429).json({
+        error: `Too many requests for this agent. Please wait ${resetInSec} seconds.`,
         retryAfter: resetInSec
       });
     }
